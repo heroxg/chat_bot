@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot app</title>
+</head>
+<body>
+    <main>
+        <div id="chat__wrapper">
+            <div id="chathistory"></div>
+            <form>
+                <input type="text" id="user_query" placeholder="Type your query" />
+                <input type="submit" role="button" value="submit" />
+            </form>
+        </div>
+    </main>
+    <script>
+        const form = document.querySelector('form');
+const chatHistory = document.getElementById('chathistory');
+const userQuery = document.getElementById('user_query');
+
+console.log(form);
+
+form.addEventListener("submit",function(e) {
+    e.preventDefault();
+    console.log("I am clicked")
+    const userContent = userQuery.value;
+    const userMessage = document.createElement('div');
+    userMessage.classList.add('message')
+    userMessage.innerHTML = userContent;
+    console.log(userMessage)
+    chatHistory.appendChild(userMessage);
+
+    userQuery.value = "";
+
+    fetch('/chat', {
+        method: "POST",
+        headers: {"Content-Type": "application/x-www-form-urlencoded"},
+        body: `text=${userContent}`
+    })
+    .then(response => response.text())
+    .then(response => {
+        const chatBotMessageDiv = document.createElement("div");
+        chatBotMessageDiv.innerHTML = response;
+        chatHistory.appendChild(chatBotMessageDiv);
+    })
+})
+    </script>
+</body>
+</html>
